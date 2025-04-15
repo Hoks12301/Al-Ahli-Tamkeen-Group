@@ -77,11 +77,30 @@
     footer hr {
       margin: 20px 0;
     }
+
+    .password-container {
+      max-width: 400px;
+      margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <!-- نافذة إدخال كلمة المرور -->
+  <div id="passwordContainer" class="password-container">
+    <h2>أدخل كلمة المرور</h2>
+    <label for="password">كلمة المرور:</label>
+    <input type="password" id="password" placeholder="أدخل كلمة المرور">
+    <button onclick="checkPassword()">دخول</button>
+    <p id="passwordError" style="color: red; display: none;">كلمة المرور غير صحيحة، حاول مرة أخرى.</p>
+  </div>
+
+  <!-- حاسبة الأقساط -->
+  <div id="calculatorContainer" class="container" style="display:none;">
     <h2>حاسبة الأقساط</h2>
 
     <label for="amount">أدخل المبلغ الأصلي:</label>
@@ -114,6 +133,18 @@
   </footer>
 
   <script>
+    const correctPassword = "01014437588"; // كلمة المرور هي رقم الهاتف
+
+    function checkPassword() {
+      const enteredPassword = document.getElementById("password").value;
+      if (enteredPassword === correctPassword) {
+        document.getElementById("passwordContainer").style.display = "none";
+        document.getElementById("calculatorContainer").style.display = "block";
+      } else {
+        document.getElementById("passwordError").style.display = "block";
+      }
+    }
+
     function calculateInstallment() {
       const amount = parseFloat(document.getElementById("amount").value);
       const months = parseInt(document.getElementById("duration").value);
@@ -124,20 +155,17 @@
       }
 
       let interestRate;
-      // تحديد الفائدة بناءً على المدة المختارة
       if (months === 12) {
-        interestRate = 0.35; // 35% لفترة سنة واحدة
+        interestRate = 0.35;
       } else if (months === 18) {
-        interestRate = 0.52; // 52% لفترة سنة ونصف
+        interestRate = 0.52;
       } else if (months === 24) {
-        interestRate = 0.70; // 70% لفترة سنتين
+        interestRate = 0.70;
       }
 
       const adminRate = 0.05;
 
-      // حساب الفائدة المركبة
       let totalAfterInterest = amount * (1 + interestRate);
-
       const adminFees = amount * adminRate;
       const netAmount = amount - adminFees;
       const monthlyInstallment = totalAfterInterest / months;
