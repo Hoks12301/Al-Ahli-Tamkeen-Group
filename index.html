@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>حاسبة الأقساط</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      direction: rtl;
+      padding: 20px;
+      background-color: #e5ddd5;
+      color: #333;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #075e54;
+      text-align: center;
+    }
+
+    label, select, input {
+      display: block;
+      margin: 15px 0 5px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    input, select {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #25D366;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #1ebc5b;
+    }
+
+    .result-box {
+      background-color: #dcf8c6;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .result-box p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    footer hr {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>حاسبة الأقساط</h2>
+
+    <label for="amount">أدخل المبلغ الأصلي:</label>
+    <input type="number" id="amount" placeholder="مثال: 10000">
+
+    <label for="duration">اختر المدة:</label>
+    <select id="duration">
+      <option value="12">سنة (12 شهر)</option>
+      <option value="18">سنة ونصف (18 شهر)</option>
+      <option value="24">سنتين (24 شهر)</option>
+    </select>
+
+    <button onclick="calculateInstallment()">احسب</button>
+
+    <div class="result-box" id="results" style="display:none;">
+      <p id="totalAfterInterest"></p>
+      <p id="adminFees"></p>
+      <p id="netAmount"></p>
+      <p id="monthlyInstallment"></p>
+      <p id="firstInstallment"></p>
+      <p id="netAfterFirst"></p>
+      <button onclick="window.print()">طباعة / حفظ PDF</button>
+    </div>
+  </div>
+
+  <footer>
+    <hr>
+    <p>تم التصميم بواسطة: <strong>محمود بليغ</strong> - 01014437588</p>
+    <p>رئيس المجموعة: <strong>حازم رزق</strong> - 01062155056</p>
+  </footer>
+
+  <script>
+    function calculateInstallment() {
+      const amount = parseFloat(document.getElementById("amount").value);
+      const months = parseInt(document.getElementById("duration").value);
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("يرجى إدخال مبلغ صحيح");
+        return;
+      }
+
+      let interestRate;
+      // تحديد الفائدة بناءً على المدة المختارة
+      if (months === 12) {
+        interestRate = 0.35; // 35% لفترة سنة واحدة
+      } else if (months === 18) {
+        interestRate = 0.52; // 52% لفترة سنة ونصف
+      } else if (months === 24) {
+        interestRate = 0.70; // 70% لفترة سنتين
+      }
+
+      const adminRate = 0.05;
+
+      // حساب الفائدة المركبة
+      let totalAfterInterest = amount * (1 + interestRate);
+
+      const adminFees = amount * adminRate;
+      const netAmount = amount - adminFees;
+      const monthlyInstallment = totalAfterInterest / months;
+      const netAfterFirst = netAmount - monthlyInstallment;
+
+      document.getElementById("totalAfterInterest").textContent =
+        "المبلغ بعد الفائدة (الفائدة: " + (interestRate * 100) + "%): " + totalAfterInterest.toFixed(2) + " جنيه";
+      document.getElementById("adminFees").textContent =
+        "المصاريف الإدارية (5٪): " + adminFees.toFixed(2) + " جنيه";
+      document.getElementById("netAmount").textContent =
+        "مبلغ الاستلام بعد خصم المصاريف: " + netAmount.toFixed(2) + " جنيه";
+      document.getElementById("monthlyInstallment").textContent =
+        "القسط الشهري لمدة " + months + " شهر: " + monthlyInstallment.toFixed(2) + " جنيه";
+      document.getElementById("firstInstallment").textContent =
+        "أول قسط: " + monthlyInstallment.toFixed(2) + " جنيه";
+      document.getElementById("netAfterFirst").textContent =
+        "المبلغ الإجمالي بعد خصم أول قسط: " + netAfterFirst.toFixed(2) + " جنيه";
+
+      document.getElementById("results").style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
